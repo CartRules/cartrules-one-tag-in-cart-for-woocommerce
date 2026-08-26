@@ -64,9 +64,45 @@ class CartRestrictionTest extends WPMockTestCase {
 
 		WP_Mock::userFunction( 'get_option' )->with( 'cartrules_otic_enabled', 'no' )->andReturn( 'yes' );
 		WP_Mock::userFunction( 'get_option' )->with( 'cartrules_otic_mode', 'deny' )->andReturn( 'deny' );
-		WP_Mock::userFunction( 'get_option' )->with( 'cartrules_otic_deny_message' )->andReturn( 'Blocked: {tag}' );
+		WP_Mock::userFunction( 'get_option' )->with( 'cartrules_otic_deny_message', WP_Mock\Functions::type( 'string' ) )->andReturn( 'Blocked: {tag}' );
 		WP_Mock::userFunction( 'get_term' )->with( 10, 'product_tag' )->andReturn( (object) array( 'name' => 'Fragile' ) );
 		WP_Mock::userFunction( 'wc_add_notice' )->with( 'Blocked: Fragile', 'error' )->once();
+
+		$this->assertFalse( $restriction->validate_add_to_cart( true, 2 ) );
+	}
+
+	/**
+	 * The message options only exist in the database once the settings screen has actually
+	 * been saved. Enabling the restriction any other way (wp_cli, a partial options-table
+	 * restore) must still produce a real message, not a blank notice.
+	 */
+	public function test_falls_back_to_the_default_message_when_the_option_was_never_saved() {
+		$restriction = new \CartRules_OTIC_Cart_Restriction();
+
+		$this->mock_cart( array( 'key_1' => array( 'product_id' => 1 ) ) );
+		$this->mock_tags(
+			array(
+				1 => array( 10 ),
+				2 => array( 20 ),
+			)
+		);
+
+		WP_Mock::userFunction( 'get_option' )->with( 'cartrules_otic_enabled', 'no' )->andReturn( 'yes' );
+		WP_Mock::userFunction( 'get_option' )->with( 'cartrules_otic_mode', 'deny' )->andReturn( 'deny' );
+		// Simulate an unset option: get_option() returns whatever default it was called with.
+		WP_Mock::userFunction( 'get_option' )->with( 'cartrules_otic_deny_message', WP_Mock\Functions::type( 'string' ) )
+			->andReturnUsing( static fn( $option, $fallback ) => $fallback );
+		WP_Mock::userFunction( 'get_term' )->with( 10, 'product_tag' )->andReturn( (object) array( 'name' => 'Fragile' ) );
+		WP_Mock::userFunction( '__' )->andReturnUsing( static fn( $text ) => $text );
+		WP_Mock::userFunction( 'wc_add_notice' )
+			->with( WP_Mock\Functions::type( 'string' ), 'error' )
+			->once()
+			->andReturnUsing(
+				function ( $message ) {
+					$this->assertStringContainsString( 'Fragile', $message );
+					$this->assertNotSame( '', $message );
+				}
+			);
 
 		$this->assertFalse( $restriction->validate_add_to_cart( true, 2 ) );
 	}
@@ -84,7 +120,7 @@ class CartRestrictionTest extends WPMockTestCase {
 
 		WP_Mock::userFunction( 'get_option' )->with( 'cartrules_otic_enabled', 'no' )->andReturn( 'yes' );
 		WP_Mock::userFunction( 'get_option' )->with( 'cartrules_otic_mode', 'deny' )->andReturn( 'replace' );
-		WP_Mock::userFunction( 'get_option' )->with( 'cartrules_otic_replace_message' )->andReturn( 'Replaced: {tag}' );
+		WP_Mock::userFunction( 'get_option' )->with( 'cartrules_otic_replace_message', WP_Mock\Functions::type( 'string' ) )->andReturn( 'Replaced: {tag}' );
 		WP_Mock::userFunction( 'get_term' )->with( 10, 'product_tag' )->andReturn( (object) array( 'name' => 'Fragile' ) );
 		WP_Mock::userFunction( 'wc_add_notice' )->with( 'Replaced: Fragile', 'notice' )->once();
 
