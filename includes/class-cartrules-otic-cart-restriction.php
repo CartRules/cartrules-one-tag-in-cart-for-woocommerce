@@ -62,7 +62,7 @@ class CartRules_OTIC_Cart_Restriction {
 			return true;
 		}
 
-		wc_add_notice( $this->build_message( 'cartrules_otic_deny_message', $existing_tag_name ), 'error' );
+		wc_add_notice( $this->build_deny_message( $existing_tag_name ), 'error' );
 
 		return false;
 	}
@@ -86,13 +86,25 @@ class CartRules_OTIC_Cart_Restriction {
 			WC()->cart->remove_cart_item( $conflicting_item_key );
 		}
 
-		wc_add_notice( $this->build_message( 'cartrules_otic_replace_message', $replacement['tag_name'] ), 'notice' );
+		wc_add_notice( $this->build_replace_message( $replacement['tag_name'] ), 'notice' );
 	}
 
-	private function build_message( string $option_id, string $tag_name ): string {
-		$message = get_option( $option_id );
+	/**
+	 * The message options are only ever written to the database when the settings screen is
+	 * saved, so get_option() needs the same fallback the settings screen shows in the
+	 * textarea by default -- otherwise enabling this via wp_cli/wp option update, or a site
+	 * migration that drops the option row, silently produces a blank notice.
+	 */
+	private function build_deny_message( string $tag_name ): string {
+		$default = __( 'You already have products tagged "{tag}" in your cart. Please remove them first, or complete that order separately.', 'cartrules-one-tag-in-cart-for-woocommerce' );
 
-		return str_replace( '{tag}', $tag_name, $message );
+		return str_replace( '{tag}', $tag_name, get_option( 'cartrules_otic_deny_message', $default ) );
+	}
+
+	private function build_replace_message( string $tag_name ): string {
+		$default = __( 'Your cart contained products tagged "{tag}", so we replaced them with your new selection.', 'cartrules-one-tag-in-cart-for-woocommerce' );
+
+		return str_replace( '{tag}', $tag_name, get_option( 'cartrules_otic_replace_message', $default ) );
 	}
 
 	/**

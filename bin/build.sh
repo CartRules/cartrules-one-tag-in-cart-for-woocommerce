@@ -117,6 +117,7 @@ echo "  staging files..."
 rsync -a \
 	--exclude '/.git/' \
 	--exclude '/.github/' \
+	--exclude '/.gitattributes' \
 	--exclude '/.claude/' \
 	--exclude '/CLAUDE.md' \
 	--exclude '/AGENTS.md' \
