@@ -4,7 +4,7 @@ Tags: woocommerce, cart, product tag, restrict cart, checkout
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ No, the restriction only applies to the storefront cart. Orders added or changed
 3. Go to WooCommerce > Settings > CartRules > One Tag in Cart to turn the restriction on and choose what should happen.
 
 == Changelog ==
+
+= 1.0.2 =
+* Fixed uneven spacing above the icon and below the plugin name on the plugin thumbnail
 
 = 1.0.1 =
 * New icon
