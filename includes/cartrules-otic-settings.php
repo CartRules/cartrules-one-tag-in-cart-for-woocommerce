@@ -24,7 +24,11 @@ function cartrules_otic_settings_fields( array $settings, string $section_id ): 
 		array(
 			'title' => __( 'One Tag in Cart', 'cartrules-one-tag-in-cart-for-woocommerce' ),
 			'type'  => 'title',
-			'desc'  => __( 'Prevent customers from mixing products with different tags in the same cart.', 'cartrules-one-tag-in-cart-for-woocommerce' ),
+			/* translators: %s: link to the CartRules PRO plugin page. */
+			'desc'  => sprintf(
+				__( 'Prevent customers from mixing products with different tags in the same cart. Need more control? %1$s puts every cart rule (category, tag, brand, shipping class, product type) in one place. Each rule can target specific tags instead of "any one at a time" (for example, only keep "Gift Cards" separate), and you get unlimited custom rules with full control over when each one applies. It also checks for other cart restrictions already running on your store, whether from another CartRules plugin or your own custom code, so nothing quietly conflicts.', 'cartrules-one-tag-in-cart-for-woocommerce' ),
+				'<a href="https://cartrules.com/product/cartrules-one-in-cart-pro/" target="_blank" rel="noopener noreferrer">CartRules One in Cart PRO</a>'
+			),
 			'id'    => 'cartrules_otic_settings_title',
 		),
 		array(
