@@ -2,12 +2,12 @@
 /**
  * Plugin Name:          CartRules One Tag in Cart for WooCommerce
  * Description:          Restrict the WooCommerce cart to products from a single tag at a time.
- * Version:              1.0.3
+ * Version:              1.0.4
  * Requires at least:    6.5
  * Requires PHP:         7.4
  * Requires Plugins:     woocommerce
  * WC requires at least: 7.1
- * WC tested up to:      11.0.1
+ * WC tested up to:      11.3
  * Author:               Rodolfo Melogli
  * Author URI:           https://businessbloomer.com/
  * License:              GPL v2 or later
@@ -21,7 +21,7 @@ declare( strict_types=1 );
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CARTRULES_OTIC_VERSION', '1.0.3' );
+define( 'CARTRULES_OTIC_VERSION', '1.0.4' );
 define( 'CARTRULES_OTIC_FILE', __FILE__ );
 define( 'CARTRULES_OTIC_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CARTRULES_OTIC_URL', plugin_dir_url( __FILE__ ) );
